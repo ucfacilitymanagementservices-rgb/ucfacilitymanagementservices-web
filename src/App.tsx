@@ -1,16 +1,17 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import About from './pages/About';
-import Services from './pages/Services';
-import Videos from './pages/Videos';
-import Careers from './pages/Careers';
-import Contact from './pages/Contact';
+import { HashRouter, Routes, Route } from "react-router-dom";
+
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Services from "./pages/Services";
+import Videos from "./pages/Videos";
+import Careers from "./pages/Careers";
+import Contact from "./pages/Contact";
 
 function App() {
   return (
-    <Router>
+    <HashRouter>
       <div className="min-h-screen bg-white">
         <Header />
         <main>
@@ -25,7 +26,7 @@ function App() {
         </main>
         <Footer />
       </div>
-    </Router>
+    </HashRouter>
   );
 }
 
