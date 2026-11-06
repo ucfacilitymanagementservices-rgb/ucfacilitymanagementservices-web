@@ -2,10 +2,16 @@ import { useEffect, useRef } from 'react';
 import { Shield, TrendingUp, Award, Target, Heart, Lightbulb, Users as UsersIcon } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useSeo } from '../hooks/useSeo';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
+  useSeo({
+    title: 'About Us',
+    description: 'Learn about UC Facility Management Services (UCFMS) — our mission, vision, values, and commitment to delivering excellence in security, housekeeping, and facility management across Bangalore and Hyderabad.',
+    canonicalPath: '/about',
+  });
   const heroRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);

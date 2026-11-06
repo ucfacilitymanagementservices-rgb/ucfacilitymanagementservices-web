@@ -16,6 +16,7 @@ import {
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import EnquiryModal from '../components/EnquiryModal';
+import { useSeo } from '../hooks/useSeo';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -35,6 +36,12 @@ const serviceImages: { [key: string]: string } = {
 };
 
 export default function Services() {
+  useSeo({
+    title: 'Our Services',
+    description: 'Comprehensive facility management services from UCFMS: security, housekeeping, MEP, fire safety, STP/WTP, DG set management, lift maintenance, landscaping, pest control, gym management, and front office services.',
+    canonicalPath: '/services',
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);

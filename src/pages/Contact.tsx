@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import { Phone, Mail, Clock, MessageCircle, CheckCircle, ChevronDown, Send } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useSeo } from '../hooks/useSeo';
 
 export default function Contact() {
+  useSeo({
+    title: 'Contact Us',
+    description: 'Get in touch with UC Facility Management Services for professional security, housekeeping, and facility management solutions. Call +91 98804 05254 or send us an enquiry.',
+    canonicalPath: '/contact',
+  });
+
   const [formData, setFormData] = useState({
     fullName: '',
     company: '',
@@ -28,7 +35,8 @@ export default function Contact() {
           phone: formData.phone,
           company: formData.company,
           service: formData.serviceType,
-          message: formData.message,
+          message: formData.message || `${formData.serviceType} enquiry from ${formData.company}`,
+          type: 'general',
         },
       ]);
 

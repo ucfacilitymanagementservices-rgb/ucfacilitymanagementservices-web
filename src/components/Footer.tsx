@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Facebook, Youtube, Instagram, Briefcase, Phone, Mail } from 'lucide-react';
+import { Facebook, Youtube, Instagram, Phone, Mail } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -41,9 +41,9 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  On-Demand Services
-                </a>
+                <Link to="/careers" className="hover:text-white transition-colors">
+                  Careers
+                </Link>
               </li>
               <li>
                 <Link to="/contact" className="hover:text-white transition-colors">
@@ -78,28 +78,31 @@ export default function Footer() {
             <h3 className="font-semibold mb-4">Follow Us</h3>
             <div className="flex gap-4">
               <a
-                href="#"
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center hover:bg-white/30 transition-colors"
-              >
-                <Facebook size={18} />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center hover:bg-white/30 transition-colors"
+                aria-label="YouTube"
               >
                 <Youtube size={18} />
               </a>
               <a
-                href="#"
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center hover:bg-white/30 transition-colors"
+                aria-label="Instagram"
               >
                 <Instagram size={18} />
               </a>
               <a
-                href="#"
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center hover:bg-white/30 transition-colors"
+                aria-label="Facebook"
               >
-                <Briefcase size={18} />
+                <Facebook size={18} />
               </a>
             </div>
           </div>
@@ -110,14 +113,7 @@ export default function Footer() {
             <p className="mb-4">
               © 2025 UC Facility Management Services. All rights reserved.
             </p>
-            <div className="flex justify-center gap-6">
-              <a href="#" className="hover:text-white transition-colors">
-                Terms & Conditions
-              </a>
-              <a href="#" className="hover:text-white transition-colors">
-                Privacy Policy
-              </a>
-            </div>
+
           </div>
         </div>
       </div>

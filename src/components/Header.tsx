@@ -60,10 +60,10 @@ export default function Header() {
             ))}
           </nav>
 
-          <button className="hidden sm:flex btn-primary gap-2 items-center">
+          <a href="tel:+919880405254" className="hidden sm:flex btn-primary gap-2 items-center">
             <Phone size={18} />
             <span className="text-sm">+91 98804 05254</span>
-          </button>
+          </a>
 
           <button
             onClick={() => setIsOpen(!isOpen)}
@@ -89,10 +89,10 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
-            <button className="w-full mt-4 btn-primary flex gap-2 items-center justify-center">
+            <a href="tel:+919880405254" className="w-full mt-4 btn-primary flex gap-2 items-center justify-center">
               <Phone size={18} />
               <span>+91 98804 05254</span>
-            </button>
+            </a>
           </nav>
         )}
       </div>

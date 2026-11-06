@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Play, X, Loader2, Youtube } from 'lucide-react';
+import { useSeo } from '../hooks/useSeo';
 
 interface Video {
   id: string;
@@ -11,6 +12,12 @@ interface Video {
 }
 
 export default function Videos() {
+  useSeo({
+    title: 'Videos',
+    description: 'Watch UCFMS facility management videos — see our security, housekeeping, and technical services in action across Bangalore and Hyderabad.',
+    canonicalPath: '/videos',
+  });
+
   const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);

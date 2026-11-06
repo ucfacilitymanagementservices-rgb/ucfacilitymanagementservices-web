@@ -1,10 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Phone, Mail, Shield, CheckCircle, Building2, Users, TrendingUp, Award } from 'lucide-react';
+import { ArrowRight, Phone, Mail, Shield, CheckCircle, Building2, Users, TrendingUp, Award, Heart } from 'lucide-react';
 import EnquiryModal from '../components/EnquiryModal';
+import { useSeo, SEO_DEFAULTS } from '../hooks/useSeo';
 
 export default function Home() {
+  useSeo({
+    title: SEO_DEFAULTS.title,
+    description: SEO_DEFAULTS.description,
+    canonicalPath: '/',
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const servicesScrollRef = useRef<HTMLDivElement>(null);
 
   const services = [
@@ -70,24 +76,6 @@ export default function Home() {
     },
   ];
 
-  const testimonials = [
-    {
-      text: 'UCFMS delivers reliable security and maintenance services with professionalism and dedication.',
-      author: 'Corporate Office Manager',
-      company: 'Tech Solutions India',
-    },
-    {
-      text: 'Outstanding facility management services. Their team is always responsive and professional.',
-      author: 'Facility Head',
-      company: 'Healthcare Complex',
-    },
-    {
-      text: 'We have seen significant improvement in our facility operations since partnering with UCFMS.',
-      author: 'Operations Director',
-      company: 'Manufacturing Unit',
-    },
-  ];
-
   const industries = [
     { name: 'Corporate Offices', icon: Building2 },
     { name: 'IT Parks', icon: TrendingUp },
@@ -96,13 +84,6 @@ export default function Home() {
     { name: 'Malls & Retail', icon: Building2 },
     { name: 'Warehouses', icon: Award },
   ];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [testimonials.length]);
 
   useEffect(() => {
     const observerOptions = {
@@ -376,46 +357,22 @@ export default function Home() {
 
       <section className="py-32 bg-[#0a1628]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-20">
-            What Our Clients Say
-          </h2>
-
-          <div className="relative min-h-[300px]">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className={`absolute inset-0 transition-all duration-700 ${
-                  index === currentTestimonial
-                    ? 'opacity-100 translate-y-0'
-                    : 'opacity-0 translate-y-8 pointer-events-none'
-                }`}
-              >
-                <div className="bg-white/10 backdrop-blur-lg p-12 rounded-2xl border border-white/20">
-                  <p className="text-2xl text-white mb-8 leading-relaxed italic">
-                    "{testimonial.text}"
-                  </p>
-                  <div className="text-white/80">
-                    <p className="font-semibold text-lg">{testimonial.author}</p>
-                    <p className="text-blue-400">{testimonial.company}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+          <div className="text-center mb-20">
+            <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <Heart className="w-8 h-8 text-white" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-20">
+              Our Commitment
+            </h2>
           </div>
 
-          <div className="flex justify-center gap-3 mt-12">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentTestimonial(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentTestimonial
-                    ? 'bg-blue-500 w-8'
-                    : 'bg-white/30 hover:bg-white/50'
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
+          <div className="bg-white/10 backdrop-blur-lg p-10 md:p-12 rounded-2xl border border-white/20">
+            <p className="text-xl md:text-2xl text-white/90 leading-relaxed text-center">
+              We've just started our journey and are excited to serve our first clients.
+              Real customer reviews will appear here soon.
+              At UCFMS, we are committed to delivering reliable facility management services
+              with professionalism, transparency, and attention to detail.
+            </p>
           </div>
         </div>
       </section>

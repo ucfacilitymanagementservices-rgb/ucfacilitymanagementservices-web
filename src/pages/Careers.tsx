@@ -17,7 +17,8 @@ import {
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { supabase } from '../lib/supabase';
+import ApplicationModal from '../components/ApplicationModal';
+import { useSeo } from '../hooks/useSeo';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,20 +35,16 @@ interface JobPosition {
 }
 
 export default function Careers() {
+  useSeo({
+    title: 'Careers',
+    description: 'Join UC Facility Management Services. Explore open positions in security, housekeeping, MEP, fire safety, and facility management across Bangalore and Hyderabad.',
+    canonicalPath: '/careers',
+  });
+
   const [expandedJob, setExpandedJob] = useState<string | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<string | null>(null);
-  const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [formData, setFormData] = useState({
-    fullName: '',
-    phone: '',
-    email: '',
-    position: '',
-    city: '',
-    whatsappNumber: '',
-    experienceYears: '',
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitMessage, setSubmitMessage] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPosition, setSelectedPosition] = useState<string>('');
 
   const heroRef = useRef<HTMLDivElement>(null);
 
@@ -182,27 +179,6 @@ export default function Careers() {
     },
   ];
 
-  const testimonials = [
-    {
-      text: 'UCFMS provided me with job security and a respectful work culture. The training program helped me grow professionally.',
-      author: 'Rajesh Kumar',
-      position: 'Security Supervisor',
-      years: '3 years',
-    },
-    {
-      text: 'Working with UCFMS has been a great experience. On-time salary, proper training, and growth opportunities.',
-      author: 'Priya Singh',
-      position: 'Housekeeping Team Leader',
-      years: '2 years',
-    },
-    {
-      text: 'The company values its employees and provides a safe working environment. I have learned a lot here.',
-      author: 'Arun Verma',
-      position: 'Electrical Technician',
-      years: '4 years',
-    },
-  ];
-
   const faqs = [
     {
       id: 'faq1',
@@ -236,12 +212,10 @@ export default function Careers() {
     },
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [testimonials.length]);
+  const openApplyModal = (position?: string) => {
+    setSelectedPosition(position || '');
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -271,44 +245,6 @@ export default function Careers() {
 
     return () => ctx.revert();
   }, []);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitMessage('');
-
-    try {
-      const { error } = await supabase.from('job_applications').insert([
-        {
-          full_name: formData.fullName,
-          phone: formData.phone,
-          email: formData.email || null,
-          position: formData.position,
-          city: formData.city,
-          whatsapp_number: formData.whatsappNumber || null,
-          experience_years: formData.experienceYears ? parseInt(formData.experienceYears) : 0,
-        },
-      ]);
-
-      if (error) throw error;
-
-      setSubmitMessage('Application submitted successfully! We will contact you soon.');
-      setFormData({
-        fullName: '',
-        phone: '',
-        email: '',
-        position: '',
-        city: '',
-        whatsappNumber: '',
-        experienceYears: '',
-      });
-    } catch (error) {
-      console.error('Error submitting application:', error);
-      setSubmitMessage('Failed to submit application. Please try again or contact us directly.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <div className="min-h-screen overflow-hidden">
@@ -340,13 +276,13 @@ export default function Careers() {
               View Open Positions
               <ArrowRight size={24} />
             </a>
-            <a
-              href="#apply"
+            <button
+              onClick={() => openApplyModal()}
               className="inline-flex items-center gap-3 px-10 py-5 bg-transparent border-2 border-white text-white text-lg font-bold rounded-full hover:bg-white hover:text-[#0a1628] transition-all duration-300 hover:scale-105"
             >
               Submit Resume
               <Upload size={24} />
-            </a>
+            </button>
           </div>
         </div>
 
@@ -495,13 +431,16 @@ export default function Careers() {
                       <div className="flex items-center gap-3">
                         <span className="text-sm text-gray-600">Experience: {job.experience}</span>
                       </div>
-                      <a
-                        href="#apply"
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openApplyModal(job.title);
+                        }}
                         className="inline-flex items-center gap-2 mt-6 px-8 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-full transition-all duration-300 hover:scale-105"
                       >
                         Apply for this position
                         <ArrowRight size={20} />
-                      </a>
+                      </button>
                     </div>
                   )}
                 </div>
@@ -548,220 +487,6 @@ export default function Careers() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="py-32 bg-[#0a1628]">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-20">
-            What Our Employees Say
-          </h2>
-
-          <div className="relative min-h-[350px]">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={index}
-                className={`absolute inset-0 transition-all duration-700 ${
-                  index === currentTestimonial
-                    ? 'opacity-100 translate-y-0'
-                    : 'opacity-0 translate-y-8 pointer-events-none'
-                }`}
-              >
-                <div className="bg-white/10 backdrop-blur-lg p-12 rounded-2xl border border-white/20">
-                  <p className="text-2xl text-white mb-8 leading-relaxed italic">
-                    "{testimonial.text}"
-                  </p>
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                      {testimonial.author[0]}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-lg text-white">{testimonial.author}</p>
-                      <p className="text-emerald-400">{testimonial.position}</p>
-                      <p className="text-white/70 text-sm">With UCFMS for {testimonial.years}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex justify-center gap-3 mt-12">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentTestimonial(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentTestimonial
-                    ? 'bg-emerald-500 w-8'
-                    : 'bg-white/30 hover:bg-white/50'
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="apply" className="py-32 bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 reveal-on-scroll">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#0a1628] mb-6">
-              Apply Now
-            </h2>
-            <p className="text-xl text-gray-600">
-              Start your career journey with UCFMS
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit} className="reveal-on-scroll bg-white p-8 md:p-12 rounded-2xl shadow-2xl">
-            <div className="space-y-6">
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all"
-                  placeholder="Enter your full name"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Phone Number <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all"
-                    placeholder="10-digit mobile number"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    WhatsApp Number
-                  </label>
-                  <input
-                    type="tel"
-                    value={formData.whatsappNumber}
-                    onChange={(e) => setFormData({ ...formData, whatsappNumber: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all"
-                    placeholder="Optional"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all"
-                  placeholder="your.email@example.com"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    Position Applying For <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    required
-                    value={formData.position}
-                    onChange={(e) => setFormData({ ...formData, position: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all"
-                  >
-                    <option value="">Select Position</option>
-                    {jobPositions.map((job) => (
-                      <option key={job.id} value={job.title}>
-                        {job.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-semibold mb-2">
-                    City <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all"
-                    placeholder="Your current city"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-gray-700 font-semibold mb-2">
-                  Years of Experience
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="50"
-                  value={formData.experienceYears}
-                  onChange={(e) => setFormData({ ...formData, experienceYears: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:border-transparent transition-all"
-                  placeholder="0 for fresher"
-                />
-              </div>
-
-              {submitMessage && (
-                <div
-                  className={`p-4 rounded-lg ${
-                    submitMessage.includes('success')
-                      ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                      : 'bg-red-50 text-red-800 border border-red-200'
-                  }`}
-                >
-                  {submitMessage}
-                </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full inline-flex items-center justify-center gap-3 px-8 py-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white text-lg font-bold rounded-full transition-all duration-300 hover:scale-105 hover:shadow-2xl disabled:cursor-not-allowed disabled:hover:scale-100"
-              >
-                {isSubmitting ? (
-                  'Submitting...'
-                ) : (
-                  <>
-                    Submit Application
-                    <ArrowRight size={24} />
-                  </>
-                )}
-              </button>
-
-              <div className="text-center pt-6">
-                <a
-                  href="https://wa.me/918682984264"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-semibold transition-colors"
-                >
-                  <Phone size={20} />
-                  Or call us directly
-                </a>
-              </div>
-            </div>
-          </form>
         </div>
       </section>
 
@@ -851,13 +576,13 @@ export default function Careers() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <a
-              href="#apply"
+            <button
+              onClick={() => openApplyModal()}
               className="inline-flex items-center gap-3 px-10 py-5 bg-white text-emerald-700 text-lg font-bold rounded-full hover:bg-gray-50 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
             >
               <Upload size={24} />
               Apply Now
-            </a>
+            </button>
             <a
               href="tel:+918682984264"
               className="inline-flex items-center gap-3 px-10 py-5 bg-transparent border-2 border-white text-white text-lg font-bold rounded-full hover:bg-white hover:text-emerald-700 transition-all duration-300 hover:scale-105"
@@ -868,6 +593,13 @@ export default function Careers() {
           </div>
         </div>
       </section>
+
+      <ApplicationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        position={selectedPosition}
+        availablePositions={jobPositions.map((job) => job.title)}
+      />
 
       <style>{`
         @keyframes fade-in-up {
